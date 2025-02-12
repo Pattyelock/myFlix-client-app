@@ -1,0 +1,51 @@
+{
+  "name": "myflix-client",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "address": "^2.0.3",
+    "axios": "^1.7.9",
+    "bootstrap": "^5.3.3",
+    "prop-types": "^15.8.1",
+    "react": "^18.3.1",
+    "react-bootstrap": "^2.10.9",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/plugin-transform-private-property-in-object": "^7.25.9",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.26.3",
+    "@parcel/transformer-sass": "^2.13.2",
+    "css-loader": "^7.1.2",
+    "postcss-loader": "^8.1.1",
+    "process": "^0.11.10",
+    "react-scripts": "^5.0.1",
+    "resolve-url-loader": "^5.0.0",
+    "sass": "^1.82.0",
+    "sass-loader": "^16.0.4",
+    "workbox-build": "^7.3.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

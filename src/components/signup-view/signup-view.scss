@@ -1,0 +1,62 @@
+
+// Customizing Bootstrap Variables
+$primary: #8b0000; // Custom primary color
+$secondary: #2c2c2c; // Custom secondary color
+$body-bg: #1c1c1c; // Background color
+$text-light: #f5f5f5; // Light text color
+
+$btn-border-radius: 8px; // Rounded corners for buttons
+
+// Import Bootstrap SCSS
+@import "~bootstrap/scss/bootstrap.scss";
+
+// Custom Styles for SignupView
+body {
+  background-color: $body-bg;
+  color: $text-light;
+  font-family: Arial, sans-serif;
+}
+
+form {
+  max-width: 400px;
+  margin: 2rem auto;
+  background-color: $secondary;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  .form-label {
+    color: $text-light;
+    font-weight: bold;
+  }
+
+  .form-control {
+    background-color: $body-bg;
+    color: $text-light;
+    border: 1px solid $primary;
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 5px $primary;
+    }
+  }
+
+  .text-danger {
+    color: $primary;
+    font-weight: bold;
+  }
+
+  button {
+    background-color: $primary;
+    border: none;
+    color: $text-light;
+    padding: 0.5rem 1rem;
+    border-radius: $btn-border-radius;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: darken($primary, 10%);
+    }
+  }
+}
