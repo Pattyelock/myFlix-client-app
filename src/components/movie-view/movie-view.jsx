@@ -1,34 +1,30 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { Col, Row, Card } from "react-bootstrap";
+import { useParams, Link } from "react-router-dom";
+import "./movie-view.scss";
 
-export const MovieView = () => {
-  // Get movie ID from URL parameters
-  const { movieId } = useParams();
-  
-  // Get the movie details from Redux store by matching the movieId
-  const movie = useSelector((state) =>
-    state.movies.list.find((movie) => movie.id === movieId)
-  );
+const MovieView = ({ movies }) => {
+  const { movieId } = useParams(); // Get the movie ID from the URL
+  const movie = movies.find((movie) => movie._id === movieId); // Find the movie by ID
 
-  // If the movie is not found, display a fallback message
   if (!movie) {
-    return <div>Movie not found</div>;
+    return <div>Movie not found. Please go back and select another movie.</div>;
   }
 
   return (
-    <Row>
-      <Col md={8}>
-        <Card>
-          <Card.Img variant="top" src={movie.image} alt={movie.title} />
-          <Card.Body>
-            <Card.Title>{movie.title}</Card.Title>
-            <Card.Text>{movie.description}</Card.Text>
-          </Card.Body>
-        </Card>
-      </Col>
-    </Row>
+    <div className="movie-view">
+      <h1>{movie.Title}</h1>
+      <img 
+        src={movie.ImageURL} 
+        alt={`${movie.Title} Poster`} 
+        className="movie-poster" 
+      />
+      <p>{movie.Description}</p>
+      <p>Genre: {movie.Genre ? movie.Genre.Name : "Unknown"}</p>
+      <p>Director: {movie.Director ? movie.Director.Name : "Unknown"}</p>
+      <Link to="/" className="go-back-link">
+        <p>Go Back</p>
+      </Link>
+    </div>
   );
 };
 

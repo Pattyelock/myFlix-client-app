@@ -1,96 +1,197 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { LoginView } from "../login-view/login-view"; // Named import
+import MovieCard from "../movie-card/movie-card";
+import MovieView from "../movie-view/movie-view";
+import { SignupView } from "../signup-view/signup-view"; // Named import
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 import { NavigationBar } from "../navigation-bar/navigation-bar";
-import { LoginView } from "../login-view/login-view";
-import { SignupView } from "../signup-view/signup-view";
-import MovieView from "../movie-view/movie-view";
-import ProfileView from "../profile-view/profile-view";
-import MoviesList from "../movies-list/movies-list";
-import { setMovies } from "../../redux/reducers/movies";
-import { MoviesFilter } from "../movies-filter/movies-filter";
+import ProfileView from "../profile-view/profile-view"; // Import ProfileView
 
-export const MainView = () => {
-  const dispatch = useDispatch();
+const MainView = () => {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const storedToken = localStorage.getItem("token");
 
-  // Get user & token from Redux (remove local state)
-  const user = useSelector((state) => state.user); 
-  const token = useSelector((state) => state.user?.token); 
+  // Initialize state from local storage
+  const [movies, setMovies] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!storedToken);
+  const [user, setUser] = useState(storedUser);
+  const [token, setToken] = useState(storedToken);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredMovies, setFilteredMovies] = useState(movies);
 
-  //  Get movies from Redux
-  const movies = useSelector((state) => state.movies.list || []); // Ensure movies is an array
-  const filter = useSelector((state) => state.filter || ""); // Get filter from Redux
-
+  // Fetch movies if token is available
   useEffect(() => {
     if (!token) return;
 
     fetch("https://movie-api-main-2-81ab4bbd4cbf.herokuapp.com/movies", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Cache-Control": "no-cache", // Fix API caching issue
-      },
+      headers: { Authorization: `Bearer ${token}` },
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
-        dispatch(setMovies(data)); // ✅ Store movies correctly
+        console.log(data);
+        setMovies(data); // Store the fetched movies
       })
       .catch((error) => {
         console.error("Error fetching movies:", error);
       });
-  }, [token, dispatch]);
+  }, [token]);
 
-  //  Filter movies correctly (only if movies exist)
-  const filteredMovies = movies.length
-    ? movies.filter((movie) => movie.title.toLowerCase().includes(filter.toLowerCase()))
-    : [];
+  // Filter movies based on the search query
+  useEffect(() => {
+    setFilteredMovies(
+      movies.filter((movie) =>
+        movie.Title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery, movies]);
 
-  //  Fix authentication logic (use Redux `user`)
-  if (!user || !token) {
+  // If no user, show the login/signup view
+  if (!user) {
     return (
       <div className="auth-container">
-        <LoginView />
+        <LoginView
+          onLoggedIn={(user, token) => {
+            setUser(user);
+            setToken(token);
+            localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("token", token);
+          }}
+        />
         <span className="separator">or</span>
         <SignupView />
       </div>
     );
   }
 
+  // If a movie is selected, show MovieView
+  if (selectedMovie) {
+    return (
+      <MovieView
+        movie={selectedMovie}
+        onBackClick={() => setSelectedMovie(null)}
+      />
+    );
+  }
+
+  // If there are no movies, show a message
+  if (movies.length === 0) {
+    return (
+      <>
+        <button
+          onClick={() => {
+            setUser(null);
+            setToken(null);
+            localStorage.clear();
+          }}
+        >
+          Logout
+        </button>
+        <div>The list is empty!</div>
+      </>
+    );
+  }
+
+  const onLoggedOut = () => {
+    setUser(null);
+    // Handle logout (clear token, etc.)
+    localStorage.clear();
+  };
+
   return (
     <BrowserRouter>
-      <NavigationBar />
+      <NavigationBar user={user} onLogout={onLoggedOut} />
+      
+      {/* Search Bar Added Here */}
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search movies..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="search-input"
+        />
+      </div>
+
       <Row className="justify-content-md-center">
-        <MoviesFilter />
         <Routes>
-          <Route path="/signup" element={<SignupView />} />
-          <Route path="/login" element={<LoginView />} />
+          <Route
+            path="/signup"
+            element={
+              <>
+                {user ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Col md={5}>
+                    <SignupView />
+                  </Col>
+                )}
+              </>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <>
+                {user ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Col md={5}>
+                    <LoginView onLoggedIn={(user) => setUser(user)} />
+                  </Col>
+                )}
+              </>
+            }
+          />
           <Route
             path="/profile"
-            element={!user ? <Navigate to="/login" replace /> : <Col md={8}><ProfileView /></Col>}
+            element={
+              <>
+                {!user ? (
+                  <Navigate to="/login" replace />
+                ) : (
+                  <Col md={8}>
+                    <ProfileView user={user} />
+                  </Col>
+                )}
+              </>
+            }
           />
           <Route
             path="/movies/:movieId"
             element={
-              !filteredMovies.length ? (
-                <Col>The list is empty!</Col>
-              ) : (
-                <Col md={8}><MovieView /></Col>
-              )
+              <>
+                {!user ? (
+                  <Navigate to="/login" replace />
+                ) : movies.length === 0 ? (
+                  <Col>The list is empty!</Col>
+                ) : (
+                  <Col md={8}>
+                    <MovieView movies={movies} />
+                  </Col>
+                )}
+              </>
             }
           />
           <Route
             path="/"
             element={
-              !filteredMovies.length ? (
-                <Col>The list is empty!</Col>
-              ) : (
-                <MoviesList movies={filteredMovies} />
-              )
+              <>
+                {!user ? (
+                  <Navigate to="/login" replace />
+                ) : movies.length === 0 ? (
+                  <Col>The list is empty!</Col>
+                ) : (
+                  <>
+                    {filteredMovies.map((movie) => (
+                      <Col className="mb-4" key={movie._id} md={3}>
+                        <MovieCard movie={movie} />
+                      </Col>
+                    ))}
+                  </>
+                )}
+              </>
             }
           />
         </Routes>

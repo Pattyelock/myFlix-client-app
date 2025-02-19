@@ -1,18 +1,16 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-// import { Provider } from "react-redux";/
-import { store } from "./redux/store";
-import { BrowserRouter } from "react-router-dom"; // Ensure BrowserRouter is here
 import "./index.scss";
 import MainView from "./components/main-view/main-view";
 
+// Find the root element in the DOM
+const container = document.getElementById("root");
+const root = createRoot(container);
 
-const App = () => {
-  return (
-  // <Provider store={store}>
-  <Container>
-  <MainView />
-  </Container>
-  // {/* </Provider> */}
-  );
-  };
+const MyFlix = () => (
+  <React.StrictMode>
+    <MainView />
+  </React.StrictMode>
+);
+
+root.render(<MyFlix />);

@@ -1,31 +1,5 @@
-// // Define a primary color variable
-// $primary-color: steelblue;
-
-// body {
-//   font-family: Arial, sans-serif;
-//   margin: 0;
-//   padding: 0;
-//   background-color: #f8f9fa;
-// }
-
-// .my-flix {
-//   color: $primary-color;
-//   padding: 20px;
-// }
-
-// h1 {
-//   text-align: center;
-// }
-
-// .movie-list {
-//   display: flex;
-//   justify-content: center;
-//   gap: 20px;
-//   flex-wrap: wrap;
-// }
-
-// Define your custom variables
-$primary: #bfbdbd; // Custom primary color
+// Define custom variables for colors and layout
+$primary: #ffffff; // Custom primary color
 $secondary: #2c2c2c; // Custom secondary color
 $body-bg: #1c1c1c; // Background color
 $text-light: #ffffff; // Bright text color for better visibility
@@ -40,29 +14,71 @@ body {
   background-color: $body-bg;
   color: $text-light;
   font-family: "Arial", sans-serif;
+  margin: 60px;
+  padding: 0;
 }
 
-// Form input customization
+// Form container styling
+.form-container {
+  max-width: 650px;  // Limit the form width
+  width: 100%;       // Ensure it takes full width within the max-width
+  margin: 20 auto;    // Center the form horizontally
+  padding: 30px;     // Add padding around the form
+  border-radius: 8px; // Rounded corners for aesthetics
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); // Shadow for visual separation
+}
+
+// Form input fields
 .form-control {
-  background-color: $secondary;
-  color: $text-light; // Ensure text inside the input field is visible
-  border: 1px solid $primary;
+  width: 50%;            // Full width of the form container
+  max-width: 100%;        // Prevents exceeding the container width
+  margin-bottom: 30px;    // Space between inputs
+  margin-left: 40px;
+  padding: 10px;          // Padding inside input fields for better spacing
+  box-sizing: border-box; // Ensures padding is included in width
+  background-color: #fff;
+}
+
+// Button styling
+button {
+  padding: 12px;
+  font-size: 16px;
+  background-color: #007bff;
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+
+  &::hover {
+    background-color: #0056b3; // Hover state for button
+  }
+}
+
+// Primary button specific style
+.btn-primary {
+  margin-left: 60px;
+}
+
+// Button outline-light for logout button
+.btn-outline-light {
+  border-color: #ffffff;  /* Set border color */
+  color: #ffffff;         /* Set text color */
+  background-color: transparent; /* Transparent background */
+
+  &:hover {
+    background-color: #ffffff;  /* Light background on hover */
+    color: #1c1c1c;             /* Dark text on hover */
+    border-color: #ffffff;     /* Maintain border color on hover */
+  }
 
   &:focus {
-    background-color: $secondary;
-    color: $text-light; // Retain visibility for focused inputs
-    border-color: $primary;
-    box-shadow: 0 0 0 0.25rem rgba($primary, 0.5);
-  }
-
-  &::placeholder {
-    color: $text-muted; // Make placeholder text visible
-    opacity: 1; // Fully visible
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.5); /* Focus effect */
   }
 }
 
-// Additional global styles
-.text-muted {
-  color: $text-muted;
+// Label styling
+.form-label {
+  margin-bottom: 20px;
+  margin-left: 60px;
 }
-
